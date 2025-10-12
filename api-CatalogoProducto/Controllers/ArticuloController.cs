@@ -4,15 +4,19 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using dominio;
+using negocio;
 
 namespace api_CatalogoProducto.Controllers
 {
     public class ArticuloController : ApiController
     {
         // GET: api/Articulo
-        public IEnumerable<string> Get()
+        public IEnumerable<Articulo> Get()
         {
-            return new string[] { "value1", "value2" };
+            ArticuloNegocio negocio = new ArticuloNegocio();
+            
+            return negocio.listar();
         }
 
         // GET: api/Articulo/5
