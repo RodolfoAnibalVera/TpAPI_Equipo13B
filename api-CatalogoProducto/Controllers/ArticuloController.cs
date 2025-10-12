@@ -20,9 +20,12 @@ namespace api_CatalogoProducto.Controllers
         }
 
         // GET: api/Articulo/5
-        public string Get(int id)
+        public Articulo Get(int id)
         {
-            return "value";
+            ArticuloNegocio negocio = new ArticuloNegocio();
+            List<Articulo> lista = negocio.listar();
+
+            return lista.Find(x => x.Id == id);
         }
 
         // POST: api/Articulo
