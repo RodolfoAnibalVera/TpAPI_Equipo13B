@@ -17,7 +17,7 @@ namespace api_CatalogoProducto.Models
 
         public int IdMarca { get; set; }
         public int IdCategoria { get; set; }
-        public decimal Precio
+        public string Precio
         {
             get; set;
 
