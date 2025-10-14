@@ -163,6 +163,7 @@
     </Compile>
     <Compile Include="Models\ArticuloDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validaciones\ArticuloValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />

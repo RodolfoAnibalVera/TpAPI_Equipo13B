@@ -9,6 +9,7 @@ using System.Web.Http;
 using System.Web.UI.WebControls.WebParts;
 using api_CatalogoProducto.Models;
 using System.Globalization;
+using api_CatalogoProducto.Validaciones;
 
 namespace api_CatalogoProducto.Controllers
 {
@@ -36,56 +37,12 @@ namespace api_CatalogoProducto.Controllers
         {
             try
             {
-                List<string> errores = new List<string>();
-
-                if (art == null)
-                {
-                    errores.Add("No se recibió ningún dato o el formato del JSON es inválido.");
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, errores);
-                }
-
-                if (string.IsNullOrWhiteSpace(art.Codigo))
-                    errores.Add("El código es obligatorio.");
-
-                if (string.IsNullOrWhiteSpace(art.Nombre))
-                    errores.Add("El nombre es obligatorio.");
-
-                if (art.IdMarca <= 0)
-                    errores.Add("La marca debe ser un número válido mayor a cero.");
-
-                if (art.IdCategoria <= 0)
-                    errores.Add("La categoría debe ser un número válido mayor a cero.");
-
-                decimal precioDecimal = 0;
-                var cultura = new CultureInfo("es-AR");
-
-                if (string.IsNullOrWhiteSpace(art.Precio))
-                    errores.Add("El precio es obligatorio.");
-                else if (!decimal.TryParse(art.Precio, NumberStyles.Number, cultura, out precioDecimal) || precioDecimal <= 0)
-                    errores.Add("El precio debe ser un número válido mayor a cero.");
-
-                if (!Uri.IsWellFormedUriString(art.Imagenes, UriKind.Absolute))
-                    errores.Add("El formato de URL imagen es inválido.");
-
-                if (art.IdMarca > 0)
-                {
-                    MarcaNegocio marcaNegocio = new MarcaNegocio();
-                    Marca marca = marcaNegocio.Listar().Find(m => m.Id == art.IdMarca);
-                    if (marca == null)
-                        errores.Add("La marca no existe.");
-                }
-
-                if (art.IdCategoria > 0)
-                {
-                    CategoriaNegocio categoriaNegocio = new CategoriaNegocio();
-                    Categoria categoria = categoriaNegocio.Listar().Find(c => c.Id == art.IdCategoria);
-                    if (categoria == null)
-                        errores.Add("La categoría no existe.");
-                }
+                decimal precioDecimal;
+                var errores = ArticuloValidator.Validar(art, out precioDecimal);
 
                 if (errores.Any())
                     return Request.CreateResponse(HttpStatusCode.BadRequest, errores);
-
+                
                 Articulo nuevo = new Articulo
                 {
                     Codigo = art.Codigo,
