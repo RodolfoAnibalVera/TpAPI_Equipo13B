@@ -160,6 +160,23 @@ namespace negocio
             }
         }
 
+        public void modificarImagenConId(int id, Imagen imagen)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                datos.setearConsulta("UPDATE IMAGENES SET IdArticulo = @idArticulo, ImagenUrl = @imagenUrl WHERE Id = @idImagen");
+                datos.setearParametro("@idArticulo", imagen.IdArticulo);
+                datos.setearParametro("@imagenUrl", imagen.ImagenUrl);
+                datos.setearParametro("@idImagen", id);
+                datos.ejecutarAccion();
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
         public void eliminarImagen(int Id)
         {
             AccesoDatos datos = new AccesoDatos();

@@ -11,4 +11,10 @@ namespace api_CatalogoProducto.Models
         public int IdArticulo { get; set; }
         public List<string> Imagenes { get; set; }
     }
+
+    public class ImagenDtoModificar
+    {
+        public int IdArticulo { get; set; }
+        public string ImagenUrl { get; set; }
+    }
 }

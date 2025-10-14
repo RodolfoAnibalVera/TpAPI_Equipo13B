@@ -61,13 +61,17 @@ namespace api_CatalogoProducto.Controllers
 
         /**********************************************************/
         // PUT: api/Imagen/5
-        public void Put([FromBody] ImagenDto img)
+        public void Put(int id, [FromBody] ImagenDtoModificar img)
         {
             ImagenNegocio negocio = new ImagenNegocio();
+            Imagen nueva = new Imagen();
+
+            nueva.IdArticulo = img.IdArticulo;
+            nueva.ImagenUrl = img.ImagenUrl;
 
             try
             {
-                negocio.modificarVariasImagenes(img.IdArticulo, img.Imagenes);
+                negocio.modificarImagenConId(id, nueva);
             }
             catch (Exception ex)
             {
