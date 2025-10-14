@@ -42,6 +42,39 @@ namespace negocio
             }
         }
 
+        public List<Imagen> listarPorArticulo(int idArticulo)
+        {
+            List<Imagen> lista = new List<Imagen>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta("SELECT Id, IdArticulo, ImagenUrl FROM IMAGENES WHERE IdArticulo = @idArticulo");
+                datos.setearParametro("@idArticulo", idArticulo);
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Imagen img = new Imagen();
+                    img.Id = (int)datos.Lector["Id"];
+                    img.IdArticulo = (int)datos.Lector["IdArticulo"];
+                    img.ImagenUrl = (string)datos.Lector["ImagenUrl"];
+                    lista.Add(img);
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al listar imágenes por artículo", ex);
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+
         public void agregarImagen(int IdArticulo, String ImagenUrl)
         {
             AccesoDatos datos = new AccesoDatos();

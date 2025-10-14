@@ -20,6 +20,7 @@ namespace api_CatalogoProducto.Controllers
             return negocio.listar();
         }
 
+        /**********************************************************/
         // GET: api/Imagen/5
         public Imagen Get(int id)
         {
@@ -29,6 +30,18 @@ namespace api_CatalogoProducto.Controllers
             return lista.Find(x => x.Id == id);
         }
 
+        /**********************************************************/
+        /*Metodo GET todas las imagenes por IdArticulo*/
+
+        [HttpGet]                                      //[HttpGet] Indica que este método se ejecuta cuando se hace una petición GET (lectura)
+        [Route("api/Imagen/PorArticulo/{idArticulo}")] // [Route] Define la ruta personalizada (URL) que invoca este método
+        public IEnumerable<Imagen> GetPorArticulo(int idArticulo)
+        {
+            ImagenNegocio negocio = new ImagenNegocio();
+            return negocio.listarPorArticulo(idArticulo);
+        }
+
+        /**********************************************************/
         // POST: api/Imagen
         public void Post([FromBody] ImagenDto img)
         {
@@ -46,6 +59,7 @@ namespace api_CatalogoProducto.Controllers
 
         }
 
+        /**********************************************************/
         // PUT: api/Imagen/5
         public void Put([FromBody] ImagenDto img)
         {
@@ -62,6 +76,7 @@ namespace api_CatalogoProducto.Controllers
             }
         }
 
+        /**********************************************************/
         // DELETE: api/Imagen/5
         public void Delete(int id)
         {
