@@ -97,21 +97,20 @@ namespace negocio
             if (urls == null || urls.Count == 0)
                 return;
 
-            AccesoDatos datos = new AccesoDatos();
-
-            try
+            foreach (var url in urls)
             {
-                foreach (var url in urls)
+                AccesoDatos datos = new AccesoDatos();
+                try
                 {
                     datos.setearConsulta("INSERT INTO IMAGENES (IdArticulo, ImagenUrl) VALUES (@IdArticulo, @Url)");
                     datos.setearParametro("@IdArticulo", idArticulo);
                     datos.setearParametro("@Url", url);
                     datos.ejecutarAccion();
                 }
-            }
-            finally
-            {
-                datos.cerrarConexion();
+                finally
+                {
+                    datos.cerrarConexion();
+                }
             }
         }
 
