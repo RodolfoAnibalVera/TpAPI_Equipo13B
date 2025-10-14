@@ -11,7 +11,7 @@ namespace api_CatalogoProducto.Validaciones
 {
     public static class ArticuloValidator
     {
-        public static List<string> Validar(ArticuloDto art, out decimal precioDecimal)
+        public static List<string> Validar(ArticuloDto art, out decimal precioDecimal, bool modoEdicion = false, int idActual = 0)
         {
             List<string> errores = new List<string>();
             precioDecimal = 0;
@@ -24,6 +24,19 @@ namespace api_CatalogoProducto.Validaciones
 
             if (string.IsNullOrWhiteSpace(art.Codigo))
                 errores.Add("El código es obligatorio.");
+
+            ArticuloNegocio negocio = new ArticuloNegocio();
+            var existentes = negocio.listar();
+
+            if (!string.IsNullOrWhiteSpace(art.Codigo))
+            {
+                bool codigoDuplicado = modoEdicion
+                    ? existentes.Any(a => a.Codigo == art.Codigo && a.Id != idActual)
+                    : existentes.Any(a => a.Codigo == art.Codigo);
+
+                if (codigoDuplicado)
+                    errores.Add("Ya existe un artículo con el mismo código.");
+            }
 
             if (string.IsNullOrWhiteSpace(art.Nombre))
                 errores.Add("El nombre es obligatorio.");

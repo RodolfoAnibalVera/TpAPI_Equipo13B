@@ -51,7 +51,7 @@ namespace api_CatalogoProducto.Controllers
             {
                 negocio.agregarVariasImagenes(img.IdArticulo, img.Imagenes);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error inesperado.");
@@ -69,7 +69,7 @@ namespace api_CatalogoProducto.Controllers
             {
                 negocio.modificarVariasImagenes(img.IdArticulo, img.Imagenes);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error inesperado.");
@@ -86,7 +86,7 @@ namespace api_CatalogoProducto.Controllers
             {
                 negocio.eliminarImagen(id);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error inesperado.");

@@ -59,7 +59,7 @@ namespace api_CatalogoProducto.Controllers
 
                 return Request.CreateResponse(HttpStatusCode.OK, "Artículo agregado correctamente.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error inesperado.");
             }
