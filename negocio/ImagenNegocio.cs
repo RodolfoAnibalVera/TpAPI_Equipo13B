@@ -59,6 +59,58 @@ namespace negocio
             }
         }
 
+        public void agregarVariasImagenes(int idArticulo, List<string> urls)
+        {
+            if (urls == null || urls.Count == 0)
+                return;
+
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                foreach (var url in urls)
+                {
+                    datos.setearConsulta("INSERT INTO IMAGENES (IdArticulo, ImagenUrl) VALUES (@IdArticulo, @Url)");
+                    datos.setearParametro("@IdArticulo", idArticulo);
+                    datos.setearParametro("@Url", url);
+                    datos.ejecutarAccion();
+                }
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public void modificarVariasImagenes(int idArticulo, List<string> nuevasUrls)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                // 1️ro Eliminar las imágenes anteriores
+                datos.setearConsulta("DELETE FROM IMAGENES WHERE IdArticulo = @IdArticulo");
+                datos.setearParametro("@IdArticulo", idArticulo);
+                datos.ejecutarAccion();
+                datos.cerrarConexion();
+
+                // 2️do Insertar las nuevas imágenes
+                foreach (var url in nuevasUrls)
+                {
+                    datos.setearConsulta("INSERT INTO IMAGENES (IdArticulo, ImagenUrl) VALUES (@IdArticulo, @Url)");
+                    datos.setearParametro("@IdArticulo", idArticulo);
+                    datos.setearParametro("@Url", url);
+                    datos.ejecutarAccion();
+                    datos.cerrarConexion();
+                }
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+
         public void modificarImagen(Imagen imagen)
         {
             AccesoDatos datos = new AccesoDatos();
