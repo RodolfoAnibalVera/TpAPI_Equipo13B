@@ -59,7 +59,7 @@ namespace api_CatalogoProducto.Controllers
 
                 return Request.CreateResponse(HttpStatusCode.OK, "Artículo agregado correctamente.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error inesperado.");
             }
@@ -83,8 +83,34 @@ namespace api_CatalogoProducto.Controllers
         }
 
         // DELETE: api/Articulo/5
-        public void Delete(int id)
+        public HttpResponseMessage Delete(int id)
         {
+            try
+            {
+                var negocio = new ArticuloNegocio();
+
+                bool existe = false;
+                foreach (var art in negocio.listar())
+                {
+                    if (art.Id == id)
+                    {
+                        existe = true;
+                        break;
+                    }
+                }
+
+                if (!existe)
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "No se encontró el artículo con id {id}.");
+
+                negocio.eliminar(id);
+                
+                return Request.CreateResponse(HttpStatusCode.NoContent);
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error al eliminar el artículo.");
+            }
+
         }
     }
 }
