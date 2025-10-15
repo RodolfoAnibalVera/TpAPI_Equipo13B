@@ -112,5 +112,62 @@ namespace api_CatalogoProducto.Controllers
             }
 
         }
+
+        [HttpGet]
+        [Route("api/Articulo/buscar")]
+        public HttpResponseMessage Buscar(string campo, string criterio, string filtro)
+        {
+            try
+            {
+                if (campo == null || criterio == null || filtro == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Debe completar todos los campos para realizar la búsqueda.");
+                }
+
+                // Normalizo los textos
+                campo = campo.Trim();
+                criterio = criterio.Trim();
+                filtro = filtro.Trim();
+
+                // Validar campo permitido
+                if (campo != "Precio" && campo != "Nombre" && campo != "Descripcion")
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, "Campo inválido. Use 'Precio', 'Nombre' o 'Descripcion'.");
+                }
+
+                // Validar criterio según el campo
+                if (campo == "Precio")
+                {
+                    if (criterio != "Mayor a" && criterio != "Menor a" && criterio != "Igual a")
+                    {
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, "Criterio inválido para el campo Precio.");
+                    }
+
+                    decimal valor;
+                    if (!decimal.TryParse(filtro, out valor))
+                    {
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, "El filtro para el campo Precio debe ser un número.");
+                    }
+                }
+                else
+                {
+                    if (criterio != "Comienza con" && criterio != "Termina con" && criterio != "Contiene")
+                    {
+                        return Request.CreateResponse(HttpStatusCode.BadRequest, "Criterio inválido. Use 'Comienza con', 'Termina con' o 'Contiene'.");
+                    }
+                }
+
+                // Reutilizo el método filtrar de la capa negocio
+                ArticuloNegocio negocio = new ArticuloNegocio();
+                List<Articulo> lista = negocio.filtrar(campo, criterio, filtro);
+
+                return Request.CreateResponse(HttpStatusCode.OK, lista);
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error al buscar los artículos.");
+            }
+        }
+
     }
 }
