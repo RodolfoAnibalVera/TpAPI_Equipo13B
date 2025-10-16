@@ -191,7 +191,7 @@ namespace api_CatalogoProducto.Controllers
 
                 negocio.eliminar(id);
                 
-                return Request.CreateResponse(HttpStatusCode.NoContent);
+                return Request.CreateResponse(HttpStatusCode.OK, "El artículo se eliminó correctamente");
             }
             catch (Exception)
             {

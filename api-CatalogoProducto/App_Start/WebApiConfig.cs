@@ -12,8 +12,6 @@ namespace api_CatalogoProducto
             // Configuración y servicios de Web API
 
             // Rutas de Web API
-            config.MapHttpAttributeRoutes();
-
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
