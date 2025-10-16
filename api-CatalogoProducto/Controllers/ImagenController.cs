@@ -34,7 +34,7 @@ namespace api_CatalogoProducto.Controllers
         /**********************************************************/
         /*Metodo GET todas las imagenes por IdArticulo*/
 
-        [HttpGet]                                      //[HttpGet] Indica que este método se ejecuta cuando se hace una petición GET (lectura)
+        [HttpGet]                                      //[HttpGet] Este método se ejecuta cuando se hace una petición GET (lectura)
         [Route("api/Imagen/PorArticulo/{idArticulo}")] // [Route] Define la ruta personalizada (URL) que invoca este método
         public IEnumerable<Imagen> GetPorArticulo(int idArticulo)
         {
@@ -109,18 +109,22 @@ namespace api_CatalogoProducto.Controllers
 
         /**********************************************************/
         // DELETE: api/Imagen/5
-        public void Delete(int id)
+        public HttpResponseMessage Delete(int id)
         {
             ImagenNegocio negocio = new ImagenNegocio();
+            var validar = new ImagenValidator();
+            string error = "";
 
             try
             {
+                error = validar.ValidarIdImagen(id);
                 negocio.eliminarImagen(id);
+                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
             }
             catch (Exception)
             {
 
-                Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error inesperado.");
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error inesperado.");
             }
         }
     }

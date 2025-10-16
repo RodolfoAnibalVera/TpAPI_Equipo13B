@@ -78,5 +78,27 @@ namespace api_CatalogoProducto.Validaciones
             return errores;
         }
 
+        public static string ValidarIdArticulo(int id)
+        {
+            string Errores = "";
+
+            if (id <= 0)
+            {
+                Errores = "El Id debe ser mayor que cero.";
+            }
+            else
+            {
+                var articuloNegocio = new ArticuloNegocio();
+
+                //Any() devuelve True si encuentra una coincidencia en la DB de Articulo, False si no encuentra. 
+                var articuloExiste = articuloNegocio.listar().Any(a => a.Id == id);
+
+                if (!articuloExiste)
+                    Errores = $"No existe un Articulo con Id = {id}.";
+            }
+
+            return Errores;
+        }
+
     }
 }

@@ -136,20 +136,37 @@ namespace api_CatalogoProducto.Controllers
         }
 
         // PUT: api/Articulo/5
-        public void Put(int id, [FromBody]ArticuloDto art)
+        public HttpResponseMessage Put(int id, [FromBody]ArticuloDto art)
         {
-            ArticuloNegocio negocio = new ArticuloNegocio();
-            Articulo nuevo = new Articulo();
-            nuevo.Codigo = art.Codigo;
-            nuevo.Nombre = art.Nombre;
-            nuevo.Descripcion = art.Descripcion;
-            nuevo.Imagenes = art.Imagenes;
-            nuevo.Marca = new Marca { Id = art.IdMarca };
-            nuevo.Categoria = new Categoria { Id = art.IdCategoria };
-            
-            nuevo.Id = id;
+            try
+            {
+                decimal precioDecimal;
+                var errores = ArticuloValidator.Validar(art, out precioDecimal);
+                errores.Add(ArticuloValidator.ValidarIdArticulo(id));
 
-            negocio.modificar(nuevo);
+                if (errores.Any())
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, errores);
+
+                Articulo nuevo = new Articulo
+                {
+                    Codigo = art.Codigo,
+                    Nombre = art.Nombre,
+                    Descripcion = art.Descripcion,
+                    Imagenes = art.Imagenes,
+                    Marca = new Marca { Id = art.IdMarca },
+                    Categoria = new Categoria { Id = art.IdCategoria },
+                    Precio = precioDecimal
+                };
+
+                ArticuloNegocio negocio = new ArticuloNegocio();
+                negocio.modificar(nuevo);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Artículo agregado correctamente.");
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error inesperado.");
+            }
         }
 
         // DELETE: api/Articulo/5
