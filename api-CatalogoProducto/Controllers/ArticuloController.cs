@@ -16,20 +16,90 @@ namespace api_CatalogoProducto.Controllers
     public class ArticuloController : ApiController
     {
         // GET: api/Articulo
-        public IEnumerable<Articulo> Get()
+        public HttpResponseMessage Get()
         {
-            ArticuloNegocio negocio = new ArticuloNegocio();
-            
-            return negocio.listar();
+            try
+            {
+                ArticuloNegocio articuloNegocio = new ArticuloNegocio();
+                ImagenNegocio imagenNegocio = new ImagenNegocio();
+
+                var articulos = articuloNegocio.listar();
+                var imagenes = imagenNegocio.listar();
+
+                if (ArticuloNegocioValidator.EstaBaseVacia(articulos))
+                {
+                    return Request.CreateResponse(
+                        HttpStatusCode.OK,
+                        new
+                        {
+                            mensaje = ArticuloNegocioValidator.MensajeBaseVacia(),
+                            articulos = new List<ArticuloConImagenesDto>()
+                        });
+                }
+
+                var resultado = articulos.Select(art => new ArticuloConImagenesDto
+                {
+                    Id = art.Id,
+                    Codigo = art.Codigo,
+                    Nombre = art.Nombre,
+                    Descripcion = art.Descripcion,
+                    Marca = art.Marca?.Descripcion,
+                    Categoria = art.Categoria?.Descripcion,
+                    Precio = art.Precio,
+                    Imagenes = imagenes
+                        .Where(img => img.IdArticulo == art.Id)
+                        .Select(img => img.ImagenUrl)
+                        .ToList()
+                }).ToList();
+
+                return Request.CreateResponse(HttpStatusCode.OK, resultado);
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(
+                    HttpStatusCode.InternalServerError,
+                    ArticuloNegocioValidator.MensajeErrorGeneral());
+            }
         }
 
         // GET: api/Articulo/5
-        public Articulo Get(int id)
+        public HttpResponseMessage Get(int id)
         {
-            ArticuloNegocio negocio = new ArticuloNegocio();
-            List<Articulo> lista = negocio.listar();
+            try
+            {
+                ArticuloNegocio articuloNegocio = new ArticuloNegocio();
+                ImagenNegocio imagenNegocio = new ImagenNegocio();
 
-            return lista.Find(x => x.Id == id);
+                var articulos = articuloNegocio.listar();
+                var errores = ArticuloExistenciaValidator.ValidarExistencia(articulos, id);
+
+                if (errores.Any())
+                    return Request.CreateResponse(HttpStatusCode.NotFound, errores);
+
+                var articulo = articulos.Find(x => x.Id == id);
+                var imagenes = imagenNegocio.listar()
+                    .Where(img => img.IdArticulo == id)
+                    .Select(img => img.ImagenUrl)
+                    .ToList();
+
+                var dto = new ArticuloConImagenesDto
+                {
+                    Id = articulo.Id,
+                    Codigo = articulo.Codigo,
+                    Nombre = articulo.Nombre,
+                    Descripcion = articulo.Descripcion,
+                    Marca = articulo.Marca?.Descripcion,
+                    Categoria = articulo.Categoria?.Descripcion,
+                    Precio = articulo.Precio,
+                    Imagenes = imagenes
+                };
+
+                return Request.CreateResponse(HttpStatusCode.OK, dto);
+            }
+            catch (Exception)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error al obtener el artículo.");
+            }
         }
 
         // POST: api/Articulo

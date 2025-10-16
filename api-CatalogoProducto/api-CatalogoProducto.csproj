@@ -162,9 +162,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ArticuloConImagenesDto.cs" />
     <Compile Include="Models\ArticuloDto.cs" />
     <Compile Include="Models\ImagenDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validaciones\ArticuloExistenciaValidator.cs" />
+    <Compile Include="Validaciones\ArticuloNegocioValidator.cs" />
     <Compile Include="Validaciones\ArticuloValidator.cs" />
   </ItemGroup>
   <ItemGroup>
