@@ -1,4 +1,5 @@
 ﻿using api_CatalogoProducto.Models;
+using api_CatalogoProducto.Validaciones;
 using dominio;
 using negocio;
 using System;
@@ -43,40 +44,66 @@ namespace api_CatalogoProducto.Controllers
 
         /**********************************************************/
         // POST: api/Imagen
-        public void Post([FromBody] ImagenDto img)
+        public HttpResponseMessage Post([FromBody] ImagenDto img)
         {
             ImagenNegocio negocio = new ImagenNegocio();
+            ImagenValidator validar = new ImagenValidator();
+            var listaDeErrores = new List<string>();
 
             try
             {
+                listaDeErrores = validar.ValidarImagen(img);
+
+                if (listaDeErrores.Any())
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, listaDeErrores);
+                }
                 negocio.agregarVariasImagenes(img.IdArticulo, img.Imagenes);
+
+                return Request.CreateResponse(HttpStatusCode.OK, "Imagen agregada correctamente.");
             }
             catch (Exception)
             {
 
-                Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error inesperado.");
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error inesperado.");
             }
 
         }
 
         /**********************************************************/
         // PUT: api/Imagen/5
-        public void Put(int id, [FromBody] ImagenDtoModificar img)
+        public HttpResponseMessage Put(int id, [FromBody] ImagenDtoModificar img)
         {
             ImagenNegocio negocio = new ImagenNegocio();
             Imagen nueva = new Imagen();
+            ImagenDto imagenDto = new ImagenDto();
+
+            ImagenValidator validar = new ImagenValidator();
+            var listaDeErrores = new List<string>();
 
             nueva.IdArticulo = img.IdArticulo;
             nueva.ImagenUrl = img.ImagenUrl;
 
+            imagenDto.IdArticulo = img.IdArticulo;
+            imagenDto.Imagenes = new List<string>();
+            imagenDto.Imagenes.Add(img.ImagenUrl);
+
             try
             {
+                listaDeErrores = validar.ValidarImagen(imagenDto);
+                listaDeErrores.Add(validar.ValidarIdImagen(id));
+                if (listaDeErrores.Any())
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, listaDeErrores);
+                }
+
                 negocio.modificarImagenConId(id, nueva);
+                return Request.CreateResponse(HttpStatusCode.OK, "Imagen modificada correctamente.");
             }
             catch (Exception)
             {
 
-                Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error inesperado.");
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error inesperado.");
             }
         }
 

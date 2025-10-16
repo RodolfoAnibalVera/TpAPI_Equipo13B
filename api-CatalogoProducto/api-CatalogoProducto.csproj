@@ -169,6 +169,7 @@
     <Compile Include="Validaciones\ArticuloExistenciaValidator.cs" />
     <Compile Include="Validaciones\ArticuloNegocioValidator.cs" />
     <Compile Include="Validaciones\ArticuloValidator.cs" />
+    <Compile Include="Validaciones\ImagenValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
