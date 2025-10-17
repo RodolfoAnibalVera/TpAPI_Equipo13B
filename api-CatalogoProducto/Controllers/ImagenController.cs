@@ -47,17 +47,6 @@ namespace api_CatalogoProducto.Controllers
         }
 
         /**********************************************************/
-        /*Metodo GET todas las imagenes por IdArticulo*/
-
-        [HttpGet]                                      //[HttpGet] Este método se ejecuta cuando se hace una petición GET (lectura)
-        [Route("api/Imagen/PorArticulo/{idArticulo}")] // [Route] Define la ruta personalizada (URL) que invoca este método
-        public IEnumerable<Imagen> GetPorArticulo(int idArticulo)
-        {
-            ImagenNegocio negocio = new ImagenNegocio();
-            return negocio.listarPorArticulo(idArticulo);
-        }
-
-        /**********************************************************/
         // POST: api/Imagen
         public HttpResponseMessage Post([FromBody] ImagenDto img)
         {
