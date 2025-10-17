@@ -23,12 +23,27 @@ namespace api_CatalogoProducto.Controllers
 
         /**********************************************************/
         // GET: api/Imagen/5
-        public Imagen Get(int id)
+        public HttpResponseMessage Get(int id)
         {
             ImagenNegocio negocio = new ImagenNegocio();
-            List<Imagen> lista = negocio.listar();
+            ImagenValidator validar = new ImagenValidator();
+           
+            try
+            {
+                string error = validar.ValidarIdImagen(id);
+                if (!string.IsNullOrEmpty(error)) return Request.CreateResponse(HttpStatusCode.NotFound, error);
 
-            return lista.Find(x => x.Id == id);
+                List<Imagen> lista = negocio.listar();
+
+                var imagen = lista.Find(x => x.Id == id);
+                return Request.CreateResponse(HttpStatusCode.OK, imagen);
+            }
+            catch (Exception)
+            {
+
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Ocurrió un error inesperado.");
+            }
+            
         }
 
         /**********************************************************/
@@ -56,7 +71,7 @@ namespace api_CatalogoProducto.Controllers
 
                 if (listaDeErrores.Any())
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, listaDeErrores);
+                    return Request.CreateResponse(HttpStatusCode.NotFound, listaDeErrores);
                 }
                 negocio.agregarVariasImagenes(img.IdArticulo, img.Imagenes);
 
@@ -91,14 +106,17 @@ namespace api_CatalogoProducto.Controllers
             try
             {
                 listaDeErrores = validar.ValidarImagen(imagenDto);
-                listaDeErrores.Add(validar.ValidarIdImagen(id));
+
+                string error = validar.ValidarIdImagen(id);
+                if (!string.IsNullOrEmpty(error)) listaDeErrores.Add(error);
+
                 if (listaDeErrores.Any())
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, listaDeErrores);
+                    return Request.CreateResponse(HttpStatusCode.NotFound, listaDeErrores);
                 }
 
                 negocio.modificarImagenConId(id, nueva);
-                return Request.CreateResponse(HttpStatusCode.OK, "Imagen modificada correctamente.");
+                return Request.CreateResponse(HttpStatusCode.OK, "Imagen modificada correctamente");
             }
             catch (Exception)
             {
@@ -113,13 +131,14 @@ namespace api_CatalogoProducto.Controllers
         {
             ImagenNegocio negocio = new ImagenNegocio();
             var validar = new ImagenValidator();
-            string error = "";
 
             try
             {
-                error = validar.ValidarIdImagen(id);
+                string error = validar.ValidarIdImagen(id);
+                if (!string.IsNullOrEmpty(error)) return Request.CreateResponse(HttpStatusCode.NotFound, error);
+
                 negocio.eliminarImagen(id);
-                return Request.CreateResponse(HttpStatusCode.BadRequest, error);
+                return Request.CreateResponse(HttpStatusCode.OK, "Imagen eliminada correctamente");
             }
             catch (Exception)
             {

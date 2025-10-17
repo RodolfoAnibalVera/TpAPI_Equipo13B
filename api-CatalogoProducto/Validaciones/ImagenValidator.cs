@@ -18,13 +18,13 @@ namespace api_CatalogoProducto.Validaciones
 
             if (img == null)
             {
-                listaDeErrores.Add("No se recibió ningún dato o el formato del JSON es inválido.");
+                listaDeErrores.Add("No se recibió ningún dato o el formato del JSON es inválido");
                 return listaDeErrores;
             }
 
             if (img.IdArticulo <= 0)
             {
-                listaDeErrores.Add("El IdArticulo debe ser mayor que cero.");
+                listaDeErrores.Add("El IdArticulo debe ser mayor que cero");
             }
             else
             {
@@ -34,18 +34,35 @@ namespace api_CatalogoProducto.Validaciones
                 var articuloExiste = articuloNegocio.listar().Any(a => a.Id == img.IdArticulo);
 
                 if (!articuloExiste)
-                    listaDeErrores.Add($"No existe un artículo con Id = {img.IdArticulo}.");
+                    listaDeErrores.Add($"No existe un artículo con Id = {img.IdArticulo}");
             }
 
+           
             if (img.Imagenes == null || img.Imagenes.Count == 0)
             {
-                listaDeErrores.Add("Debe incluir al menos una URL de imagen.");
+                listaDeErrores.Add("Debe incluir al menos una URL de imagen o el formato de Json es incorrecto");
             }
 
-            foreach (var url in img.Imagenes)
+            
+            if (img.Imagenes == null || img.Imagenes.Count == 0)
             {
-                if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
-                    listaDeErrores.Add("El formato de URL imagen es inválido.");
+                listaDeErrores.Add("Debe incluir al menos una URL de imagen o el formato de Json es incorrecto");
+            }
+            else
+            {
+                foreach (var url in img.Imagenes)
+                {
+                    if (string.IsNullOrWhiteSpace(url))
+                    {
+                        listaDeErrores.Add("Se encontró una URL vacía o el formato de Json es incorrecto");
+                        continue;
+                    }
+
+                    if (!Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                    {
+                        listaDeErrores.Add($"La URL '{url}' no tiene un formato válido");
+                    }
+                }
             }
 
             return listaDeErrores;
@@ -53,11 +70,11 @@ namespace api_CatalogoProducto.Validaciones
 
         public string ValidarIdImagen(int id)
         {
-            string Errores = "";
+            string Errores = null;
 
             if (id <= 0)
             {
-                Errores = "El Id debe ser mayor que cero.";
+                Errores = "El Id debe ser mayor que cero";
             }
             else
             {
@@ -67,7 +84,7 @@ namespace api_CatalogoProducto.Validaciones
                 var imagenExiste = imagenNegocio.listar().Any(a => a.Id == id);
 
                 if (!imagenExiste)
-                    Errores = $"No existe una imagen con Id = {id}.";
+                    Errores = $"No existe una imagen con Id = {id}";
             }
 
             return Errores;

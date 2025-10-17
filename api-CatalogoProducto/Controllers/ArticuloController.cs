@@ -142,7 +142,10 @@ namespace api_CatalogoProducto.Controllers
             {
                 decimal precioDecimal;
                 var errores = ArticuloValidator.Validar(art, out precioDecimal, modoEdicion: true, idActual: id);
-                //errores.Add(ArticuloValidator.ValidarIdArticulo(id));
+               // errores.Add(ArticuloValidator.ValidarIdArticulo(id));
+
+                string errorID = ArticuloValidator.ValidarIdArticulo(id);
+                if (!string.IsNullOrEmpty(errorID)) errores.Add(errorID);
 
                 if (errores.Any())
                     return Request.CreateResponse(HttpStatusCode.BadRequest, errores);

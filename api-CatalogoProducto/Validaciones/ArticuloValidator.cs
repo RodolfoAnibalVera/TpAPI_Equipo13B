@@ -80,11 +80,11 @@ namespace api_CatalogoProducto.Validaciones
 
         public static string ValidarIdArticulo(int id)
         {
-            string Errores = "";
+            string Errores = null;
 
             if (id <= 0)
             {
-                Errores = "El Id debe ser mayor que cero.";
+                Errores = "El Id debe ser mayor que cero";
             }
             else
             {
@@ -94,7 +94,7 @@ namespace api_CatalogoProducto.Validaciones
                 var articuloExiste = articuloNegocio.listar().Any(a => a.Id == id);
 
                 if (!articuloExiste)
-                    Errores = $"No existe un Articulo con Id = {id}.";
+                    Errores = $"No existe un Articulo con Id = {id}";
             }
 
             return Errores;
