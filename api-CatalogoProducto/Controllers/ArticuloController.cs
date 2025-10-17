@@ -141,8 +141,8 @@ namespace api_CatalogoProducto.Controllers
             try
             {
                 decimal precioDecimal;
-                var errores = ArticuloValidator.Validar(art, out precioDecimal);
-                errores.Add(ArticuloValidator.ValidarIdArticulo(id));
+                var errores = ArticuloValidator.Validar(art, out precioDecimal, modoEdicion: true, idActual: id);
+                //errores.Add(ArticuloValidator.ValidarIdArticulo(id));
 
                 if (errores.Any())
                     return Request.CreateResponse(HttpStatusCode.BadRequest, errores);
@@ -155,13 +155,14 @@ namespace api_CatalogoProducto.Controllers
                     Imagenes = art.Imagenes,
                     Marca = new Marca { Id = art.IdMarca },
                     Categoria = new Categoria { Id = art.IdCategoria },
-                    Precio = precioDecimal
+                    Precio = precioDecimal,
+                    Id = id
                 };
 
                 ArticuloNegocio negocio = new ArticuloNegocio();
                 negocio.modificar(nuevo);
 
-                return Request.CreateResponse(HttpStatusCode.OK, "Artículo agregado correctamente.");
+                return Request.CreateResponse(HttpStatusCode.OK, "Artículo modificado correctamente.");
             }
             catch (Exception)
             {
